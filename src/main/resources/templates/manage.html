@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management Page</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid text-center">
+        <div><h2>Manage Users</h2></div>
+        <div th:if="${message}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+        <div>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Mobile No</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:each="user : ${listUsers}">
+                <tr>
+                    <td>[[${user.id}]]</td>
+                    <td>[[${user.name}]]</td>
+                    <td>[[${user.mobileNo}]]</td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.role}]]</td>
+                    <td>
+                        <a class="h4 mr-3" th:href="@{'manage/edit/' + ${user.id}}">Edit</a>
+                        <a class="h4" th:href="@{'manage/delete/' + ${user.id}}">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>
