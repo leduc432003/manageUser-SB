@@ -3,8 +3,11 @@ package com.duc.register_login.controller;
 import com.duc.register_login.entity.User;
 import com.duc.register_login.repository.UserRepository;
 import com.duc.register_login.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,12 +56,13 @@ public class HomeController {
 //        return "home";
 //    }
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, HttpSession session, Model m) {
+    public String saveUser(@ModelAttribute User user, HttpSession session, Model m, HttpServletRequest request) {
 
         // System.out.println(user);
-
-        User u = userService.saveUser(user);
-
+        String url = request.getRequestURL().toString();
+        //System.out.println(url);
+        url = url.replace(request.getServletPath(), "");
+        User u = userService.saveUser(user, url);
         if (u != null) {
             // System.out.println("save sucess");
             session.setAttribute("msg", "Register successfully");
@@ -68,5 +72,16 @@ public class HomeController {
             session.setAttribute("msg", "Something wrong server");
         }
         return "redirect:/register";
+    }
+    @GetMapping("/verify")
+    public String verifyAccount(@Param("code") String code, Model model) {
+        boolean f = userService.verifyAccount(code);
+        if(f) {
+            model.addAttribute("msg", "Successfully your account is verified");
+        }
+        else {
+            model.addAttribute("msg", "May be your verification code is incorrect or already verified");
+        }
+        return "message";
     }
 }
